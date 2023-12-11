@@ -23,8 +23,8 @@ Contacts
         <tr>
             <td>{{contact.name}}</td>
             <td>{{contact.description}}</td>
-            <td><a href="/update/{{str(contact.id)}}">View</a></td>
-            <td><a href="/delete/{{str(contact.id)}}">Delete</a></td>
+            <td><a href="/contacts/show/{{str(contact.id)}}">View</a></td>
+            <td><a href="/delete_contact_accounts/{{str(account.id)}}/{{str(contact.id)}}">Remove</a></td>
         </tr>
     % end
 </table>

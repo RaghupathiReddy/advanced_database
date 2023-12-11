@@ -4,6 +4,7 @@ import database
 
 database.setup_database()
 
+# Account routes
 @route("/")
 def index():
     rows = database.get_accounts()
@@ -48,8 +49,7 @@ def post_update():
     database.update_item(id, name, description)
     redirect("/")
 
-
-
+# Contact routes
 @route("/contacts")
 def contacts_index():
     rows = database.get_contacts()
@@ -94,14 +94,22 @@ def post_contact_update():
     database.update_contact(id, name, description)
     redirect("/contacts/")
 
+# Association routes
 @post("/add_account_contacts")
 def add_contact_accounts():
     account_id = request.forms.get("account_id")
     contact_id = request.forms.get("contact_id")
-    print(account_id)
     account = database.get_accounts(account_id)
     contact = database.get_contacts(contact_id)
-    account[0].contacts.add(contact)
+    account[0].contacts.add(contact[0])
+    previous_page = request.get_header('Referer') or '/'
+    redirect(previous_page)
+
+@route("/delete_contact_accounts/<account_id>/<contact_id>")
+def remove_contact_accounts(account_id, contact_id):
+    account = database.get_accounts(account_id)
+    contact = database.get_contacts(contact_id)
+    account[0].contacts.remove(contact[0])
     previous_page = request.get_header('Referer') or '/'
     redirect(previous_page)
 
