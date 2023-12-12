@@ -7,8 +7,13 @@ database.setup_database()
 # Account routes
 @route("/")
 def index():
-    rows = database.get_accounts()
-    return template("accounts/index.tpl", accounts=rows)
+    query = request.query.get("q")
+    if(query):
+        rows = database.get_filtered_accounts(query)
+    else:
+        rows = database.get_accounts()
+        query = ''
+    return template("accounts/index.tpl", accounts=rows, query=query)
 
 @route("/show/<id>")
 def show(id):
@@ -46,14 +51,19 @@ def post_update():
     name = request.forms.get("name")
     description = request.forms.get("description")
     id = request.forms.get("id")
-    database.update_item(id, name, description)
+    database.update_account(id, name, description)
     redirect("/")
 
 # Contact routes
 @route("/contacts")
 def contacts_index():
-    rows = database.get_contacts()
-    return template("contacts/index.tpl", contacts=rows)
+    query = request.query.get("q")
+    if(query):
+        rows = database.get_filtered_contacts(query)
+    else:
+        rows = database.get_contacts()
+        query = ''
+    return template("contacts/index.tpl", contacts=rows, query=query)
 
 @route("/contacts/show/<id>")
 def show(id):
@@ -81,7 +91,7 @@ def delete_contact(id):
 def get_contact_update(id):
     rows = database.get_contacts(id)
     if len(rows) != 1:
-        redirect("/contacts/")
+        redirect("/contacts")
     name = rows[0].name
     description = rows[0].description
     return template("contacts/update.tpl", id=id, name=name, description=description)
@@ -92,7 +102,7 @@ def post_contact_update():
     description = request.forms.get("description")
     id = request.forms.get("id")
     database.update_contact(id, name, description)
-    redirect("/contacts/")
+    redirect("/contacts")
 
 # Association routes
 @post("/add_account_contacts")

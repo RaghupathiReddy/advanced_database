@@ -33,6 +33,9 @@ def get_accounts(id=None):
         accounts = Account.select().where(Account.id == id)
     return accounts
 
+def get_filtered_accounts(q):
+    accounts = Account.select().where(Account.name.contains(q))
+    return accounts
 
 def add_account(name, description):
     account = Account(name=name, description=description)
@@ -49,8 +52,11 @@ def get_contacts(id=None):
     if id == None:
         contacts = Contact.select()
     else:
-        print('test')
         contacts = Contact.select().where(Contact.id == id)
+    return contacts
+
+def get_filtered_contacts(q):
+    contacts = Contact.select().where(Contact.name.contains(q))
     return contacts
 
 def add_contact(name, description):
